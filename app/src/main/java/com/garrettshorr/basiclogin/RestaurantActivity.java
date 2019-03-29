@@ -24,6 +24,7 @@ public class RestaurantActivity extends AppCompatActivity {
     private RatingBar ratingBarRating;
     private SeekBar seekBarPrice;
     private Button buttonSave;
+    private String objectId;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -52,6 +53,8 @@ public class RestaurantActivity extends AppCompatActivity {
             editTextAddress.setText(restaurant.getAddress());
             editTextCuisine.setText(restaurant.getCuisine());
             ratingBarRating.setRating((float) restaurant.getRating());
+            this.objectId = restaurant.getObjectId();
+
             //seekBarPrice //TODO:need to finish for price
         }
         else {
@@ -60,12 +63,16 @@ public class RestaurantActivity extends AppCompatActivity {
     }
 
     private void saveNewRestaurant() {
+
         String restaurantName = editTextName.getText().toString();
         String restaurantCuisine = editTextCuisine.getText().toString();
         String restaurantAddress = editTextAddress.getText().toString();
         float restaurantRating = ratingBarRating.getRating();
         int restaurantPrice = seekBarPrice.getProgress();
         Restaurant restaurant = new Restaurant();
+        if(this.objectId!=null){
+            restaurant.setObjectId(this.objectId);
+        }
         restaurant.setName(restaurantName);
         restaurant.setCuisine(restaurantCuisine);
         restaurant.setAddress(restaurantAddress);

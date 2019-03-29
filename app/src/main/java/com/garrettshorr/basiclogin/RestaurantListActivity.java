@@ -5,6 +5,8 @@ package com.garrettshorr.basiclogin;
         import android.support.design.widget.FloatingActionButton;
         import android.support.v7.app.AppCompatActivity;
         import android.os.Bundle;
+        import android.view.ContextMenu;
+        import android.view.MenuItem;
         import android.view.View;
         import android.widget.AdapterView;
         import android.widget.ArrayAdapter;
@@ -23,6 +25,28 @@ public class RestaurantListActivity extends AppCompatActivity {
     private ListView listViewRestaurant;
     private FloatingActionButton floatingActionButtonAddRestaurant;
     public static final String EXTRA_RESTAURANT = "restaurant";
+    private List<Restaurant> listofRestaurants;
+
+
+    @Override
+    public boolean onContextItemSelected(MenuItem item) {
+        AdapterView.AdapterContextMenuInfo menuInfo = (AdapterView.AdapterContextMenuInfo)item.getMenuInfo();
+        switch (item.getItemId()){
+            case R.id.delete_id:
+                deleteItem(listofRestaurants.get(menuInfo.position));
+                return true;
+
+        }
+        return super.onContextItemSelected(item);
+    }
+
+    @Override
+    public void onCreateContextMenu(ContextMenu menu, View v, ContextMenu.ContextMenuInfo menuInfo) {
+        super.onCreateContextMenu(menu,v,menuInfo);
+       // menu.setHeaderTitle("Action");
+        getMenuInflater().inflate(R.menu.menu_layout,menu);
+
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -65,6 +89,7 @@ public class RestaurantListActivity extends AppCompatActivity {
             @Override
             public void handleResponse(final List<Restaurant> restaurantList )
             {
+                listofRestaurants = restaurantList;
                 // all Restaurant instances have been found
                 RestaurantAdapter adapter = new RestaurantAdapter(
                         RestaurantListActivity.this,
@@ -81,18 +106,21 @@ public class RestaurantListActivity extends AppCompatActivity {
                     }
                 });
 
-                listViewRestaurant.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
-                    @Override
-                    public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
-                        deleteItem(restaurantList.get(position));
-                        return true;
-                    }
-                } );
+//                listViewRestaurant.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
+//                    @Override
+//                    public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
+//                        deleteItem(restaurantList.get(position));
+//                        return true;
+//                    }
+//                } );
+
+
                 //take the clicked object and include it in the Intent
                 //in the RestaurantActivity's onCreate, check it there is a Parcelable extra
-                //if there is, then get the Restaurant object and populate the fields
-
+                //if there is,... then get the Restaurant object and populate the fields
+                registerForContextMenu(listViewRestaurant);
             }
+
             @Override
             public void handleFault( BackendlessFault fault )
             {
